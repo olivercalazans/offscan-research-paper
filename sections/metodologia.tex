@@ -1,0 +1,52 @@
+\section{Metodologia}
+Esta seção descreve a metodologia adotada para o desenvolvimento da ferramenta \textit{OffScan}, detalhando o ambiente de desenvolvimento, a arquitetura do sistema, as funcionalidades implementadas, os procedimentos de teste e os métodos de coleta de dados.
+
+\subsection{Ambiente de Desenvolvimento}
+O desenvolvimento do \textit{OffScan} foi realizado em um ambiente Linux (Debian 12 e 13), sistema operacional escolhido devido à sua compatibilidade com sockets brutos e chamadas de sistema de baixo nível necessárias para operações de rede ofensivas. As linguagens de programação utilizadas foram Rust (versão estável 1.89.0), selecionada por suas garantias de segurança de memória e desempenho, e C, devido à maturidade de suas bibliotecas de integração com o subsistema \textit{Netlink} e ao acesso direto aos cabeçalhos nativos do kernel, o que facilita a configuração de interfaces de rede sem fio.
+
+As principais ferramentas e bibliotecas/crates utilizadas incluem:
+\begin{itemize}
+    \item \textbf{Cargo} Sistema de build e gerenciador de pacotes do ecossistema Rust. Versão 1.89.0.
+
+    \item \textbf{pcap}: Crate para criação de sniffers de pacotes de rede. Versão 2.3.0.
+
+    \item \textbf{libc}: Crate para chamadas diretas ao sistema, substituindo abstrações de alto nível. Versão 0.2.177.
+
+    \item \textbf{clap}: Framework para parsing de argumentos de linha de comando. Versão 4.5.
+
+    \item \textbf{rand}: Crate para geração de valores aleatórios. Usada para a criação de IPs, MACs e outros valores aleatórios. Versão 0.8.5.
+
+    \item \textbf{libpcap-dev}: Biblioteca a nível de sistema usada para captura de pacotes. Usada pela crate \texttt{pcap}
+
+    \item \textbf{libnl-3-dev \& libnl-genl-3-dev}: Bibliotecas a nível de sistema usadas para se comunicar com o kernel via netlink para configuração rede.
+\end{itemize}
+
+
+\subsection{Arquitetura da ferramenta}
+A arquitetura do \textit{OffScan} segue um design modular, organizado em componentes especializados que colaboram para executar operações ofensivas complexas. Seus principais módulos consistem em:
+
+\begin{itemize}
+    \item \textbf{Motores}: São blocos onde são executadas operações usando as informações e funções dos outros módulos de forma coordenada com as próprias para executar um scanner ou ataque.
+    
+    \item \textbf{Construtores de pacotes/quadros 802.11}: Responsáveis pela construção manual de pacotes de rede em todas as camadas (Ethernet, IP, TCP/UDP/ICMP) e dos quadros 802.11.
+
+    \item \textbf{Sockets Brutos}: Responsáveis por enviar os pacotes brutos.
+
+    \item \textbf{Sniffer}: Responsável por capturar pacotes ou quadros diretamente de uma interface.
+
+    \item \textbf{Dissecadores}: Responsáveis por extrair informações dos pacotes/beacons.
+
+    \item \textbf{Generadores}: Blocos de código responsávies por gerar valores aletórios como IPs, MACs e portas.
+
+    \item \textbf{Provedor de informações}: Responsávies por fornecer informações interfaces de rede.
+
+    \item \textbf{Controlador de interface}: Responsável por alterar as configurações das interfaces.
+
+    \item \textbf{Módulos em C}: Apesar de maior parte do projeto ser escrita com a linguagem Rust, algumas funções foram feitos usando a linguagem C por ter um desenvolvimento mais fácil e por melhor integração com chamas a parte do sistema resposável pela configuração da interface de rede sem fio (netlink/nl80211).
+
+    \item \textbf{Utilitários}: São funções isoladas e pequenas que são usadas em várias partes do código. Porém, são pequenas e específicas. Não se encaixando nas outras categorias.
+\end{itemize}
+
+
+\subsection{Fluxo de execução}
+A ferramenta opera como uma aplicação de linha de comando, onde cada funcionalidade é acessada via subcomandos específicos. O fluxo geral inclui: (1) parsing de argumentos, (2) inicialização dos módulos necessários, (3) execução da operação principal (varredura, ataque ou análise), e (4) apresentação estruturada dos resultados.

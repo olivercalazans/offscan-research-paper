@@ -1,0 +1,8 @@
+\section{Introdução}
+Com o crescimento exponencial da conectividade e da complexidade das infraestruturas de rede, a segurança cibernética tornou-se uma preocupação crítica para organizações e indivíduos. Os ataques evoluíram em sofisticação, alguns já bem documentados e reportados, como os citados no trabalho de \citet{lari-anto} exigindo ferramentas eficazes de teste de penetração e análise de vulnerabilidades que permitam avaliar proativamente a resiliência dos sistemas.
+
+Neste contexto, este projeto apresenta o desenvolvimento da ferramenta \textit{OffScan}, uma solução ofensiva para redes escrita em Rust, em sua maior parte, e C. A escolha da linguagem Rust justifica-se por sua segurança de memória, desempenho similar ao de linguagens como C e por seu fácil acesso ao sistema. Algumas partes foram desenvolvidas em C pois apresentam um desenvolvimento mais simples e fácil do que em Rust.
+
+O \textit{OffScan} foi desenvolvido com foco em modularidade, desempenho e autonomia, reduzindo ao máximo as dependências externas por meio do uso direto de chamadas de sistema e da implementação manual de construtores e parsers de protocolos de rede. A ferramenta incorpora funcionalidades para testes ofensivos, incluindo varredura de portas, mapeamento de redes, captura e injeção de pacotes, ataques de flood em múltiplas camadas e técnicas específicas para redes sem fio, como desautenticação e mapeamento de pontos de acesso.
+
+Este relatório documenta o processo de desenvolvimento do \textit{OffScan}, detalhando a evolução da arquitetura, as funcionalidades implementadas e os resultados obtidos em ambiente controlado. Além disso, discute as lições aprendidas, as limitações identificadas e as direções futuras para o projeto.

@@ -1,0 +1,103 @@
+\section{Funcionalidades}
+A ferramenta tem seu foco em ataques a redes e a infraestrutura. Mas, também conta com alguns scanners que são úteis para fornecer informações para serem usadas nos ataques. Elas são:
+
+
+\subsection{Ataque de Desautenticação}
+Um flooder de frames IEEE 802.11 de gerenciamento usado para desautenticar dispositivos da rede. Esse ataque explora uma vulnerabilidade fundamental no protocolo 802.11, que gerencia as comunicações Wi-Fi. Ele é possível devido a duas características principais do protocolo:
+
+\begin{itemize}
+    \item Os quadros de gerenciamento, como os de autenticação e desautenticação, são enviados sem criptografia, mesmo em redes protegidas por WPA2 ou WPA3.
+
+    \item O padrão Wi-Fi original não exige que os dispositivos verifiquem se um quadro de desautenticação foi enviado pelo ponto de acesso legítimo.
+\end{itemize}
+
+Um atacante pode enviar quadros de desautenticação forjados para um dispositivo (cliente) e/ou para o ponto de acesso (AP), fingindo ser a outra parte legítima da conexão. O dispositivo ou o AP aceita esses quadros falsificados como se fossem legítimos, pois não há um mecanismo de verificação de origem. Essa falha é usada em combinação com outros ataques como o ataque \texttt{kr00k} \cite{kr00k}, \texttt{KRACK} \cite{krack} e \texttt{evil-twin} \cite{evil-twin}.
+
+O \textit{OffScan} usa dessas falhas para executar o ataque. Ele cria os frames de desautenticação usando as informações passadas pela linha de comando e envia os frames em um loop infinito para o host alvo, se passando pelo AP, e para o AP, se passando pelo host alvo.
+
+
+
+
+\subsection{Inundador de Beacons}
+Beacons são quadros (frames) enviados por roteadores de redes Wi-Fi para se apresentarem e enviarem informações necessárias para que dispositivos possam se conectar as suas redes sem fio.
+
+O inundador de beacons cria vários desses beacons com informações falsas para que os dispositivos ao alcance recebem esses beacons e os processem como se fossem redes reais. Isso faz com que a lista de redes disponíveis fique maior e confunda os usuários, o que se enquadra em um ataque de confusão de SSID \cite{confusion-attack}. Uma das informações que o inundador usa é nome de rede (BSSID) que pode ser de uma rede real ou não. Para evitar filtragem de redes pela repetição do mesmo BSSID, o código cria variações do nome passado, alterando algumas letras de maiúscula para minúscula, e o inverso também. Assim como o ataque de desautenticação, esse flooder é comumente usado em conjunto com outras técnicas.
+
+
+
+
+\subsection{Inundador de pacotes Ping}
+Esse flooder usa do protocolo ICMP, mais especificamente as mensagens Echo/Request para um ou mais alvos. 
+
+O ICMP é um protocolo fundamental de camada de rede usado para diagnósticos (como o comando ping) e mensagens de erro. Ele é projetado para ser simples e leve, sem mecanismos de autenticação ou limites de taxa integrados. Para cada solicitação de eco (ping) recebida, o dispositivo de destino deve enviar uma resposta de eco, consumindo recursos. Além da natureza do protocolo, o spoofing de IP contribui para esse ataque, pois dificilmente uma rede implementa mecanismos que previnem spoofing de IP. 
+
+O \textit{OffScan} cria os pacotes com IPs spoofados e os envia na rede. Ele pode enviar esse pacotes para um único host, se passando por dispositivos aleatórios, ou para IPs aleatórios.
+
+Podem haver limitadores como largura de manda e controle dos meios de comunicação. Devido a possibilidade de falsificação de IP, é possível usar a técnica de ataque "\texttt{smurf}" \cite{smurf}. Essa técnica de amplificação de ataque é feita colocando o endereço do alvo nos campos de endere de origem e nos endereços de destino é colocado em broadcast. Assim, todos os dispositivos da rede enviam pacotes Echo Reply para o alvo \cite{tecnica-smurf}. A amplificação do ataque depende da quantidade de dispositivos na rede. Por exemplo, m uma rede /24, com todos os IPs ativos, a aplificação tem efeito de 252 vezes.
+
+Também é possível executar ataques de reflexão, já que é possível \textit{spoofar} ambos os IPs dos pacotes. Os pacotes são enviados à um terceiro dispositivo e ele envia as respostas para o alvo.
+
+
+
+\subsection{Inundador de pacotes TCP (SYN)}
+Esse tipo de flooder é muito usado em ataques DDoS. O exemplo mais famoso do uso dessa técnica é pelo Botnet Mirai \cite{botnet-mirai}. A vulnerabilidade de SYN flooding foi formalmente documentada e analisada, com código de exploração divulgado na Phrack Magazine em 1996 (RFC 4987) \cite{tecnica-tcp-syn}. Um flooder de pacotes TCP SYN direcionado a um host para um porta especificada.
+
+Os ataques de TCP flood são possíveis devido a
+vulnerabilidades inerentes ao processo de estabelecimento de conexão do protocolo TCP, especificamente o \textit{three-way handshake} (aperto de mão em três vias).
+
+Para cada solicitação SYN recebida, o servidor/alvo reserva uma quantidade limitada de recursos em sua fila de espera (backlog). Um grande volume de solicitações incompletas esgota rapidamente esses recursos, impedindo que o servidor aceite novas conexões legítimas, o que resulta em negação de serviço.
+
+Em redes domesticas, o flooder é capaz de reduzir o throughput e, alguns casos, de paralisar a rede por sobrecarregar o AP. Em redes corporativas os desafios são maiores já que a rede é mais controlada, monitorada e robusta.
+
+
+\subsection{Mapeador de rede}
+Apesa de não ser um ataque, e sim uma técnica de reconhecimento \cite{ip-scanning}, ele é extremamente útil para serem usadados em ataque e/ou tomadas de decisão. Um mapeador de redes usa uma técnica de enviar pacotes especificos e analisar as respostas recebidas. No caso de uma escaneamento ativo.
+
+O mapeador de rede do \textit{OffScan} envia pacotes ICMP, TCP e UDP (por padrão, é possível escolher quais dentre os três será(ão) usado(os)) para todos os IPs da rede, ou de um range especificado. O gerador recebe o CIDR (baseado na interface que será usada) ou um range específico e calcula todos os IPs possíveis e entrega um iterador para ser usado nos probes.
+
+Durante o envio dos pacotes, um sniffer fica capturando as respostas em uma thread separada. Ele possui um filtro BPF (\textit{Berkley Packet Filter}) que busca por pacotes IPv4 e que contenham endereços de IP dentro do range especificado por um CIDR. Esse CIDR é criado basedo no primeiro e último IPs gerados pelo módulo \texttt{Ipv4Iter}. Assim, deixando a captura por pacotes mais especifica.
+
+
+\subsection{scanner de portas}
+Uma técnica muito usada para descobrir portas abertas e depois descobrir qual serviço está sendo executado naquela porta para poder explora-lo \cite{port-scan}.
+
+Esse comando envia pacotes TCP ou UDP para um range de portas, especificados ou pré definidos, para descobrir quais estão abertas.
+
+O \textit{OffScan}, no scanner de portas TCP, usa a técnica \textit{stealth}. Ela consistem em enviar pacotes SYN, o primeiro pacotes do \textit{three-way-handshake}. Enquanto os pacotes estão sendo enviados, um sniffer fica capturando apenas os respostas SYN-ACK, que é o segundo pacotes do \textit{handshake}. Logo após o envio, as respostas são dissecadas para decobrir quais portas responderam como abertas.
+
+No scanner de de portas UDP, o processo é diferente. Pela natureza \textit{stateless} do protocolo e seu objetivo de rapidez e simplicidade, são necessários payloads específicos para receber a confirmação das portas abertas. O protocolo UDP tem respostas diferentes do TCP. Quando uma porta está fechada, normalmente, um pacote ICMP é enviado com a \textit{flag Port Unreachable} (porta inalcançável). Quando a porta está aberta, o protocolo não responde a pacotes em payloads. Por essa razão é necessário o uso de payloads especificos para os serviços que estão sendo oferecidos nas portas, com algumas ressalvas. Se o payload não for compatível com o serviço da porta, pode não haver resposta. Os payloads usados no scanner UDP do \textit{OffScan} são baseados em serviços que rodam em portas padronizadas.
+
+
+\subsection{Mapeador de redes Wi-Fi}
+O reconhecimento das redes Wi-Fi está cada vez mais sendo usado por atacantes por ser um vetor/porta inicial de ataque \cite{wifi-vec}. Buscar informações sobre as redes disponíveis pode revelar informações de má configuração e/ou pontos fracos da infraestrutura \cite{sec-info}.
+
+O mapedor de redes Wi-Fi tem como objetivo mostrar o BSSID e o canal de cada rede wifi ao alcance. Essas informações são úteis para o ataque de desautenticação. 
+
+O mapeador tem dois submódulos, um que busca as informações do sistema (\texttt{SysSniff}) e outro que captura os beacons com o sniffer (\texttt{MonitorSniff}).
+
+O \texttt{SysSniff} usa um módulo feito em C, que se comunica com o kernel a partir do netlink, para ativar o trigger responsável por fazer a interface escanar todos os canais pegando os beacons das redes. Após isso, o módulo busca as informações das redes diretamente o kernel e os entrega para o submódulo em Rust. Então, as funções do submódulo apenas formatam as informações recolhidas do sistema e depois as mostra.
+
+Já o \texttt{MonitorSniff} faz o mesmo processo do sistema, porém, faz todo o trabalho manualmente e com a interface no modo monitor. Ele inicia o sniffer na interface e entra em um loop que fica alterando o canal da interface periodicamente. Após escanar cada interface, o sniffer é fechado e os pacotes são processados e as informações são formatadas e apresentadas.
+
+Os dois submódulos apresentam os mesmos resultados, porém, o \texttt{SysSniff} só pode ser usado quando a interface está no modo managed (modo no qual está conectada à uma rede), dispensando a necessidade de colocar a interface no modo monitor. Já o \texttt{MonitorSniff} só funciona com o modo monitor.
+
+
+\subsection{Informações de Rede e Interface}
+Essa funcionalidade tem como objetivo mostrar algumas informações da interface e da rede, se estiver conectada, sem a necessidade de escanar a rede. As informações que são apresentadas são:
+
+\begin{itemize}
+    \item Nome da interface
+    \item Estado da interface (UP, DOWN, ETC)
+    \item Tipo (Ethernet, Wireless, etc)
+    \item Endereço MAC
+    \item Endereço de IP
+    \item Endereço da rede e mascara (CIDR)
+    \item Quantidade de IPs válidos
+    \item MTU (Unidade Máxima de Transmissão)
+    \item Endereço MAC do gateway
+    \item Endereço de IP do gateway
+\end{itemize}
+
+Essas informações são buscadas de origens diferentes. Nome, estado, tipo, MAC e MTU são copiadas dos arquivos \texttt{/sys/class/net/<interface>}. Já os endereços de IP e MAC do gateway são copiados de arquivos que ficam nos diretórios \texttt{/proc/net/}. Já o IP e o endereço da rede com a máscara são conseguidos atravez de chamadas ao sistema usando a crate \texttt{libc}. E a quantidade de IPs válidos é calculada através do CIDR.
+
+Essas informações são úteis para serem usadas pelos outros comandos e/ou para tomada de decisão.

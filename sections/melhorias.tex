@@ -1,0 +1,38 @@
+\section{Melhorias e Trabalhos Futuros}
+
+Com base no desenvolvimento e nos testes realizados com o OffScan, foram identificadas várias oportunidades de melhoria e direções para trabalhos futuros:
+
+\subsection{Otimização de Desempenho}
+
+Durante a análise de desempenho com a ferramenta \texttt{perf}, observou-se que aproximadamente 99\% do tempo de execução é gasto no contexto do kernel, devido às frequentes chamadas de sistema. Cada chamada exige uma mudança de contexto entre espaço do usuário e kernel, o que consome recursos computacionais e limita a taxa de envio de pacotes.
+
+Para mitigar esse problema, planeja-se:
+
+\begin{itemize}
+    \item \textbf{Batch de operações}: Agrupar múltiplas operações de envio ou recepção em uma única chamada de sistema, reduzindo o número total de mudanças de contexto.
+    
+    \item \textbf{Sockets de alta performance}: Utilizar sockets do tipo \texttt{PF\_PACKET} com configurações otimizadas, como buffers circulares (ring buffers) para reduzir a sobrecarga.
+    
+    \item \textbf{Acesso direto ao hardware}: Explorar o uso de DPDK (Data Plane Development Kit) ou XDP (eXpress Data Path) para processamento de pacotes em alta velocidade, contornando completamente a pilha de rede do kernel.
+\end{itemize}
+
+\subsection{Expansão de Funcionalidades}
+
+Atualmente, o OffScan foca em um conjunto básico de ataques. Para torná-lo mais versátil, planeja-se adicionar:
+
+\begin{itemize}
+    \item \textbf{Ataques de camada de aplicação}: Implementar ataques específicos para protocolos como HTTP, DNS, SIP e VoIP, incluindo técnicas de injeção e amplificação.
+    \item \textbf{Técnicas de evasão}: Adicionar funcionalidades para contornar sistemas de detecção de intrusão (IDS/IPS) e firewalls, como fragmentação de pacotes, criptografia de tráfego e uso de proxies.
+    \item \textbf{Suporte a IPv6}: Estender todas as funcionalidades para suportar o protocolo IPv6, incluindo varredura, flooding e mapeamento de redes.
+    \item \textbf{Ataques a redes mesh e ad-hoc}: Desenvolver técnicas específicas para redes mesh 802.11s e redes ad-hoc, que possuem características diferentes das redes infraestrutura tradicionais.
+\end{itemize}
+
+\subsection{Aprofundamento dos Ataques Existentes}
+
+Os ataques atualmente implementados podem ser aprimorados para aumentar seu impacto e eficácia:
+
+\begin{itemize}
+    \item \textbf{Ataque de desautenticação}: Implementar variações do ataque, como deautenticação em massa para múltiplos clientes simultaneamente, e técnicas para manter a desconexão por períodos prolongados.
+    \item \textbf{Flooders}: Adicionar opções para modificar a taxa de envio dinamicamente, baseado na resposta da rede, e suporte a múltiplos alvos simultaneamente.
+    \item \textbf{Escaneamento de portas}: Incluir detecção de serviços e versões, além de suporte a técnicas de escaneamento mais discretas (\textit{stealth scanning}) e distribuição de varredura por múltiplos hosts.
+\end{itemize}
