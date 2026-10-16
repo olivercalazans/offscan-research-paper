@@ -1,6 +1,8 @@
 <h1 align="center">OffScan Research Paper</h1>
 
+Link para o código fonte da ferramenta: https://github.com/olivercalazans/offscan
 
+<br>
 
 ## LICENSE
 
