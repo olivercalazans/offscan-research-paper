@@ -1,24 +1,9 @@
-@article{lari-anto,
-    author = {Ribeiro, Larissa Ramos and de Freitas, Antônio Evangelista },
-    title = {Vulnerabilidade das Redes sem Fio: Quebra de
-Chave WEP e WPA/WPA2},
-    url = {https://ufsj.edu.br/portal2-repositorio/File/ctele/TCC/2016/Larissa%20Ribeiro.pdf}
+@misc{deauth-protecless,
+  author = {{National Vulnerability Database (NVD)}},
+  title = {{CVE}-2026-26048: De-Authentication Attack},
+  year = {2026},
+  url = {https://nvd.nist.gov/vuln/detail/CVE-2026-26048},
 }
-
-@ARTICLE{offsec-emulation,
-  author={Ajmal, Abdul Basit and Shah, Munam Ali and Maple, Carsten and Asghar, Muhammad Nabeel and Islam, Saif Ul},
-  journal={IEEE Access}, 
-  title={Offensive Security: Towards Proactive Threat Hunting via Adversary Emulation}, 
-  year={2021},
-  volume={9},
-  number={},
-  pages={126023-126033},
-  keywords={Security;Emulation;Organizations;Penetration testing;Weapons;Tools;Testing;Offensive security;threat hunting;proactive defense;red teaming;adversary emulation;mitre ATT&CK;threat analysis},
-  doi={10.1109/ACCESS.2021.3104260}}
-
-
-
-
 
 @misc{kr00k,
   author = {{National Vulnerability Database (NVD)}},
@@ -41,12 +26,32 @@ Chave WEP e WPA/WPA2},
   url = {https://nvd.nist.gov/vuln/detail/CVE-2023-52424},
 }
 
-@misc{smurf,
-  author = {{National Vulnerability Database (NVD)}},
-  title = {{CVE}-1999-0513: Smurf attack},
-  year = {1999},
-  url = {https://nvd.nist.gov/vuln/detail/CVE-1999-0513},
+@misc{cwe400,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-400: Uncontrolled Resource Consumption}},
+  howpublished = {\url{https://cwe.mitre.org/data/definitions/400.html}},
+  year         = {2026},
+  note         = {Acessado em: 19 mai. 2026}
 }
+
+@misc{cwe770,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-770: Allocation of Resources Without Limits or Throttling}},
+  howpublished = {\url{https://mitre.org}},
+  year         = {2025},
+  note         = {Acessado em: 19 mai. 2026}
+}
+
+@misc{cwe121,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-121: Stack-based Buffer Overflow}},
+  howpublished = {\url{https://mitre.org}},
+  year         = {2026},
+  note         = {Acessado em: 19 mai. 2026}
+}
+
+
+
 
 
 
@@ -84,32 +89,22 @@ Chave WEP e WPA/WPA2},
 
 
 
-@techreport{tecnica-smurf,
-    author = {Cloudflare},
-    title = {Ataque DDoS smurf},
-    institution = {Cloudflare},
-    url = {https://www.cloudflare.com/pt-br/learning/ddos/smurf-ddos-attack/}
-}
-
-@techreport{tecnica-tcp-syn,
-    author = {RFC Editor},
-    title = {TCP SYN Flooding Attacks and Common Mitigations},
-    institution = {RFC Editor},
-    year = {2007},
-    url = {https://www.rfc-editor.org/info/rfc4987}
-}
-
-@techreport{botnet-mirai,
-    author = {Cloudflare},
-    title = {O que é a botnet Mirai?},
-    institution = {Cloudflare},
-    url = {https://www.cloudflare.com/pt-br/learning/ddos/glossary/mirai-botnet/}
-}
-
 @techreport{port-scan,
-    author = {Fortinet},
-    title = {What Is A Port Scan? How To Prevent Port Scan Attacks?},
-    institution = {Fortinet},
-    url = {https://www.fortinet.com/resources/cyberglossary/what-is-port-scan}
+  author = {Fortinet},
+  title = {What Is A Port Scan? How To Prevent Port Scan Attacks?},
+  institution = {Fortinet},
+  url = {https://www.fortinet.com/resources/cyberglossary/what-is-port-scan}
 }
 
+
+
+@inproceedings {80211-flaws,
+  author = {John Bellardo and Stefan Savage},
+  title = {802.11 {Denial-of-Service} Attacks: Real Vulnerabilities and Practical Solutions},
+  booktitle = {12th USENIX Security Symposium (USENIX Security 03)},
+  year = {2003},
+  address = {Washington, D.C.},
+  url = {https://www.usenix.org/conference/12th-usenix-security-symposium/80211-denial-service-attacks-real-vulnerabilities-and},
+  publisher = {USENIX Association},
+  month = aug
+}

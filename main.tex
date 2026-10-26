@@ -1,40 +1,50 @@
-\documentclass[conference]{IEEEtran}
-\usepackage{graphicx} % Required for inserting images
+\documentclass[12pt]{article}
+
+% 1. Carregar os pacotes de idioma e fontes PRIMEIRO
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+
+% 2. Carregar o template da SBC DEPOIS
+\usepackage{sbc-template}
+
+% 3. Demais pacotes
+\usepackage{graphicx,url}
 \usepackage[numbers]{natbib}
-\usepackage[brazil]{babel}
-\usepackage[utf8]{inputenc}    % Suporte a acentos (para versões antigas do LaTeX)
-\usepackage[T1]{fontenc}       % Saída correta de acentos e cedilha
 \usepackage{tabularx}
-\usepackage[a4paper, left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
 \usepackage{hyperref}
+\usepackage{xspace}
 
+\newcommand{\offscan}{\textit{OffScan}\xspace}
+\newcommand{\mitreattack}{MITRE ATT\&CK\xspace}
+     
+\sloppy
 
+\title{OffScan: Uma Ferramenta para Testes Ofensivos em Redes Wi-Fi}
 
-
-\title{OffScan: Desenvolvimento de uma Ferramenta para Testes Ofensivos de Redes em Rust e C}
-\author{\IEEEauthorblockN{Oliver Ribeiro Calazans Jeronimo}
-\IEEEauthorblockA{Natal, Brazil \\
-oliver.calazans@academico.ifrn.edu.br}
-\and
-\IEEEauthorblockN{Rezembrim de Paula Soares}
-\IEEEauthorblockA{Natal, Brazil \\
-rezembrim.soares@ifrn.edu.br}
+\author{
+Oliver Ribeiro Calazans Jeronimo,
+Teobaldo Adelino Dantas de Medeiros
 }
-\date{December 2025}
+
+\address{
+Instituto Federal do Rio Grande do Norte (IFRN), Campus Natal Central\\ Avenida Senador Salgado Filho, nº 1559 -- 59015-000 -- Natal -- RN -- Brazil
+\email{
+  oliver.calazans@academico.ifrn.edu.br, teobaldo.dantas@ifrn.edu.br
+}
+}
+
+\makeatletter
+\let\bbl@normalsf\relax
+\let\normalsfcodes\relax
+\makeatother
 
 \begin{document}
 \maketitle
 
 
-
-\begin{abstract}
-Este artigo apresenta o OffScan, uma ferramenta unificada para testes ofensivos de redes implementada principalmente em Rust, com módulos complementares em C. Desenvolvida com foco em modularidade, desempenho e autonomia, a ferramenta reduz dependências externas através do uso direto de chamadas de sistema e implementação manual de construtores de protocolos. O OffScan integra funcionalidades essenciais como mapeamento de redes, escaneamento de portas, ataques de flooding (TCP, ICMP) e técnicas específicas para redes Wi-Fi (desautenticação, inundação de beacons). Os resultados em ambiente controlado demonstram sua eficácia, com taxas de envio superiores a 400.000 pacotes por segundo em redes cabeadas e sucesso na execução dos ataques sem fio. A ferramenta representa uma contribuição prática ao ecossistema de segurança ofensiva, oferecendo uma base sólida para desenvolvimentos futuros.
-\end{abstract}
-
-
-
-
-\input{sections/introducao}
+\input{sections/abstract}
+\input{sections/intro}
 \input{sections/fundamentacao}
 \input{sections/metodologia}
 \input{sections/funcionalidades}
